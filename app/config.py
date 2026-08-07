@@ -13,8 +13,8 @@ class Settings(BaseSettings):
     app_name: str = "FleetPulse"
     debug: bool = False
 
-    # Phase 1: postgresql+psycopg://... — required once the data layer lands.
-    database_url: str | None = None
+    # Default matches docker-compose for zero-friction local dev; prod overrides.
+    database_url: str = "postgresql+psycopg://fleetpulse:fleetpulse@localhost:5432/fleetpulse"
     # Phase 5: LLM summariser / Phase 7: Ops Agent.
     anthropic_api_key: str | None = None
 

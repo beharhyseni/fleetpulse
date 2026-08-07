@@ -2,8 +2,12 @@
 tool-using ops agent. Demo domain: IoT device fleet."""
 
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+from sqlalchemy import text
 
 from app.config import get_settings
+from app.db import DbSession
+from app.routers import devices
 
 
 def create_app() -> FastAPI:
@@ -16,6 +20,7 @@ def create_app() -> FastAPI:
             "tool-using ops agent; demo domain: IoT device fleet."
         ),
     )
+    application.include_router(devices.router)
 
     @application.get("/healthz", tags=["ops"])
     def healthz() -> dict[str, str]:
@@ -23,13 +28,13 @@ def create_app() -> FastAPI:
         return {"status": "ok"}
 
     @application.get("/readyz", tags=["ops"])
-    def readyz() -> dict[str, str]:
-        """Readiness: dependencies are reachable.
-
-        Phase 1 wires a real database connectivity check here; until then
-        readiness equals liveness.
-        """
-        return {"status": "ready"}
+    def readyz(db: DbSession) -> JSONResponse:
+        """Readiness: the database answers SELECT 1."""
+        try:
+            db.execute(text("SELECT 1"))
+        except Exception:  # noqa: BLE001 - any DB failure means "not ready"
+            return JSONResponse(status_code=503, content={"status": "unavailable"})
+        return JSONResponse(content={"status": "ready"})
 
     return application
 

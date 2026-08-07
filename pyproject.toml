@@ -14,8 +14,10 @@ select = ["E", "F", "I", "W", "UP", "B", "SIM"]
 [tool.mypy]
 python_version = "3.12"
 strict = true
+explicit_package_bases = true
 warn_unused_ignores = true
 
 [tool.pytest.ini_options]
+pythonpath = ["."]
 addopts = "--cov=app --cov-fail-under=75"
 testpaths = ["tests"]
