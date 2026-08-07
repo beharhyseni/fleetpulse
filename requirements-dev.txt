@@ -1,0 +1,6 @@
+pytest
+pytest-cov
+httpx
+ruff
+mypy
+pre-commit
