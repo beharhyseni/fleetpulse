@@ -1,5 +1,3 @@
-"""Pydantic schemas: the API contract, separate from the storage model."""
-
 import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Literal
