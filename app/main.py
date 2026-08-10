@@ -7,7 +7,7 @@ from sqlalchemy import text
 
 from app.config import get_settings
 from app.db import DbSession
-from app.routers import devices
+from app.routers import devices, telemetry
 
 
 def create_app() -> FastAPI:
@@ -21,6 +21,7 @@ def create_app() -> FastAPI:
         ),
     )
     application.include_router(devices.router)
+    application.include_router(telemetry.router)
 
     @application.get("/healthz", tags=["ops"])
     def healthz() -> dict[str, str]:

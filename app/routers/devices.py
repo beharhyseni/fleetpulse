@@ -1,5 +1,3 @@
-"""Device registry: the reference router pattern for Phase 1."""
-
 import uuid
 from typing import Annotated
 

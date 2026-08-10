@@ -1,8 +1,8 @@
 import uuid
 from datetime import UTC, datetime, timedelta
-from typing import Literal
+from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, computed_field
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, computed_field
 
 DeviceStatus = Literal["online", "stale", "offline"]
 
@@ -45,3 +45,20 @@ class DeviceRead(BaseModel):
     @property
     def status(self) -> DeviceStatus:
         return derive_status(self.last_seen_at)
+
+
+class TelemetryIn(BaseModel):
+    device_id: uuid.UUID
+    ts: AwareDatetime
+    battery_pct: float = Field(ge=0, le=100)
+    temp_c: float = Field(ge=-90, le=150)
+    signal_rssi: int
+    payload: dict[str, Any] = Field(default_factory=dict)
+
+
+TelemetryBatch = Annotated[list[TelemetryIn], Field(min_length=1)]
+
+
+class IngestResult(BaseModel):
+    ingested: int
+    alerts_created: int
