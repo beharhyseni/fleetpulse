@@ -1,3 +1,5 @@
+"""Pydantic schemas: the API contract, separate from the storage model."""
+
 import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Annotated, Any, Literal
@@ -62,3 +64,27 @@ TelemetryBatch = Annotated[list[TelemetryIn], Field(min_length=1)]
 class IngestResult(BaseModel):
     ingested: int
     alerts_created: int
+
+
+class TelemetryRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    device_id: uuid.UUID
+    ts: datetime
+    battery_pct: float
+    temp_c: float
+    signal_rssi: int
+    payload: dict[str, Any]
+
+
+class AlertRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    device_id: uuid.UUID
+    ts: datetime
+    severity: str
+    type_: str = Field(serialization_alias="type")
+    message: str
+    resolved_at: datetime | None

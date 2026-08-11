@@ -7,7 +7,7 @@ from sqlalchemy import text
 
 from app.config import get_settings
 from app.db import DbSession
-from app.routers import devices, telemetry
+from app.routers import alerts, devices, telemetry
 
 
 def create_app() -> FastAPI:
@@ -22,6 +22,7 @@ def create_app() -> FastAPI:
     )
     application.include_router(devices.router)
     application.include_router(telemetry.router)
+    application.include_router(alerts.router)
 
     @application.get("/healthz", tags=["ops"])
     def healthz() -> dict[str, str]:
@@ -33,7 +34,7 @@ def create_app() -> FastAPI:
         """Readiness: the database answers SELECT 1."""
         try:
             db.execute(text("SELECT 1"))
-        except Exception:  # noqa: BLE001 - any DB failure means "not ready"
+        except Exception:
             return JSONResponse(status_code=503, content={"status": "unavailable"})
         return JSONResponse(content={"status": "ready"})
 

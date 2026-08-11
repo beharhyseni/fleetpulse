@@ -19,7 +19,7 @@ test:
 	pytest
 
 db-up:
-	docker compose up -d --wait db
+	docker compose up -d db
 
 db-down:
 	docker compose down
@@ -29,6 +29,9 @@ migrate:
 
 revision:
 	alembic revision --autogenerate -m "$(m)"
+
+seed:
+	python -m app.seed --devices 25 --hours 72 --reset
 
 build:
 	@echo "Phase 2: docker build comes here"
