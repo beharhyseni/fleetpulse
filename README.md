@@ -18,7 +18,7 @@ architecture.
 ## Status / roadmap
 
 - [x] **P0 — Scaffold**: FastAPI skeleton, ruff + mypy + pytest, pre-commit, CI
-- [ ] P1 — Core API: models, migrations, ingest, rules engine, seeder
+- [x] P1 — Core API: models, migrations, ingest, rules engine, seeder
 - [ ] P2 — Docker + local Kubernetes (k3d)
 - [ ] P3 — Terraform + cloud k3s (live URL)
 - [ ] P4 — CI/CD: build, push, deploy on merge
