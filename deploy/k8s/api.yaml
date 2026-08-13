@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetpulse-api
+  namespace: fleetpulse
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: fleetpulse-api }
+  template:
+    metadata:
+      labels: { app: fleetpulse-api }
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: api
+          image: fleetpulse:dev
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef: { name: fleetpulse-secrets }
+          ports: [{ containerPort: 8000 }]
+          resources:
+            requests: { cpu: 100m, memory: 192Mi }
+            limits: { cpu: 500m, memory: 512Mi }
+          readinessProbe:
+            httpGet: { path: /readyz, port: 8000 }
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetpulse-api
+  namespace: fleetpulse
+spec:
+  selector: { app: fleetpulse-api }
+  ports: [{ port: 8000, targetPort: 8000 }]
