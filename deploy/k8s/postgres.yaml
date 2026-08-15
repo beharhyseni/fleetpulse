@@ -19,6 +19,7 @@ spec:
   strategy:
     type: Recreate
   selector:
+    matchLabels: { app: postgres }
   template:
     metadata:
       labels: { app: postgres }
