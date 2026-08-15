@@ -1,5 +1,5 @@
 # FleetPulse
-
+**Live demo:** http://app.63.176.86.97.nip.io/docs
 > Real-time event monitoring with a grounded LLM copilot and a tool-using ops agent; demo domain: IoT device fleet.
 
 ![ci](https://github.com/beharhyseni/fleetpulse/actions/workflows/ci.yml/badge.svg)
@@ -19,8 +19,8 @@ architecture.
 
 - [x] **P0 — Scaffold**: FastAPI skeleton, ruff + mypy + pytest, pre-commit, CI
 - [x] P1 — Core API: models, migrations, ingest, rules engine, seeder
-- [ ] P2 — Docker + local Kubernetes (k3d)
-- [ ] P3 — Terraform + cloud k3s (live URL)
+- [x] P2 — Docker + local Kubernetes (k3s via Rancher Desktop)
+- [x] P3 — Terraform + cloud k3s (live URL)
 - [ ] P4 — CI/CD: build, push, deploy on merge
 - [ ] P5 — Grounded LLM incident summariser
 - [ ] P6 — Observability polish (structured logs, metrics, rate limits)
@@ -38,8 +38,10 @@ make lint test
 
 ## Architecture
 
-Diagram lands with P1–P2. Until then: `app/main.py` is the app factory; `app/config.py`
-is 12-factor configuration via pydantic-settings.
+Telemetry batches enter through `POST /telemetry`, are validated at the edge (pydantic),
+ingested atomically (SQLAlchemy/Postgres), and evaluated by a rules engine that raises
+deduplicated alerts — race-proofed by a partial unique index. Kubernetes runs it all
+(probes, secrets, ingress); Terraform builds the node it runs on. Diagram lands at P6.
 
 ## Design decisions
 
