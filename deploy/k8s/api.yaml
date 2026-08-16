@@ -13,9 +13,11 @@ spec:
     spec:
       securityContext:
         runAsNonRoot: true
+      imagePullSecrets:
+        - name: ghcr-pull
       containers:
         - name: api
-          image: fleetpulse:dev
+          image: ghcr.io/beharhyseni/fleetpulse:latest
           imagePullPolicy: IfNotPresent
           envFrom:
             - secretRef: { name: fleetpulse-secrets }
