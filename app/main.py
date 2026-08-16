@@ -14,7 +14,7 @@ def create_app() -> FastAPI:
     settings = get_settings()
     application = FastAPI(
         title=settings.app_name,
-        version="0.2.0",
+        version="0.2.1",
         description=(
             "Real-time event monitoring with a grounded LLM copilot and a "
             "tool-using ops agent; demo domain: IoT device fleet."
