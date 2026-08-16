@@ -21,7 +21,7 @@ architecture.
 - [x] P1 — Core API: models, migrations, ingest, rules engine, seeder
 - [x] P2 — Docker + local Kubernetes (k3s via Rancher Desktop)
 - [x] P3 — Terraform + cloud k3s (live URL)
-- [ ] P4 — CI/CD: build, push, deploy on merge
+- [x] P4 — CI/CD: build, push, deploy on merge
 - [ ] P5 — Grounded LLM incident summariser
 - [ ] P6 — Observability polish (structured logs, metrics, rate limits)
 - [ ] P7 — Ops Agent: tool-use loop, approval-gated writes, run tracing
