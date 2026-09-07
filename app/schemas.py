@@ -88,3 +88,12 @@ class AlertRead(BaseModel):
     type_: str = Field(serialization_alias="type")
     message: str
     resolved_at: datetime | None
+
+
+class SummaryOut(BaseModel):
+    generated_at: AwareDatetime
+    model: str
+    summary: str
+    alerts_open: int
+    devices_affected: int
+    silent_devices: int

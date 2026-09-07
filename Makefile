@@ -34,7 +34,7 @@ seed:
 	python -m app.seed --devices 25 --hours 72 --reset
 
 build:
-	@echo "Phase 2: docker build comes here"
+	docker build -t fleetpulse:dev .
 
 deploy:
-	@echo "Phase 3: terraform + kubectl come here"
+	@echo "deploys ship via git push -- see .github/workflows/ci.yml"

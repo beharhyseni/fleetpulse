@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     # Default matches docker-compose for zero-friction local dev; prod overrides.
     database_url: str = "postgresql+psycopg://fleetpulse:fleetpulse@localhost:5432/fleetpulse"
     # Phase 5: LLM summariser / Phase 7: Ops Agent.
-    anthropic_api_key: str | None = None
+    anthropic_api_key: str = ""
 
 
 @lru_cache

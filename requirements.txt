@@ -4,3 +4,4 @@ pydantic-settings
 sqlalchemy
 alembic
 psycopg[binary]
+anthropic==1.4.0

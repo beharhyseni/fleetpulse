@@ -7,14 +7,14 @@ from sqlalchemy import text
 
 from app.config import get_settings
 from app.db import DbSession
-from app.routers import alerts, devices, telemetry
+from app.routers import alerts, devices, incidents, telemetry
 
 
 def create_app() -> FastAPI:
     settings = get_settings()
     application = FastAPI(
         title=settings.app_name,
-        version="0.2.1",
+        version="0.3.0",
         description=(
             "Real-time event monitoring with a grounded LLM copilot and a "
             "tool-using ops agent; demo domain: IoT device fleet."
@@ -23,6 +23,7 @@ def create_app() -> FastAPI:
     application.include_router(devices.router)
     application.include_router(telemetry.router)
     application.include_router(alerts.router)
+    application.include_router(incidents.router)
 
     @application.get("/healthz", tags=["ops"])
     def healthz() -> dict[str, str]:
