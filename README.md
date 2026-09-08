@@ -1,8 +1,7 @@
 # FleetPulse
 **Live demo:** http://app.63.176.86.97.nip.io/docs
 > Real-time event monitoring with a grounded LLM copilot and a tool-using ops agent; demo domain: IoT device fleet.
-
-![ci](https://github.com/beharhyseni/fleetpulse/actions/workflows/ci.yml/badge.svg)
+[![ci](https://github.com/beharhyseni/fleetpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/beharhyseni/fleetpulse/actions/workflows/ci.yml)
 
 FleetPulse is a small production-style event-monitoring platform, demonstrated on an IoT
 device fleet: sources report telemetry to a FastAPI backend, a rules engine raises alerts,
@@ -42,16 +41,43 @@ make lint test
 
 ## Try the AI layer
 
-The summariser reads the live alert window and writes an operator briefing that cites
-device names and alert ids, and invents nothing (see `SYSTEM_PROMPT` in
-`app/services/summarize.py`):
+The live URL's AI endpoints sit behind an `X-API-Key` gate because each call spends
+real LLM tokens; unauthenticated calls get the standard 401 envelope (itself a small
+demo: one error shape, request id included). The key is available on request, or run
+the whole stack locally with the Quickstart above and your own `ANTHROPIC_API_KEY`
+(without one, `/incidents/summary` degrades to 503 by design).
 
 ```bash
-curl -s http://app.63.176.86.97.nip.io/incidents/summary | python3 -m json.tool
+# open endpoints, no key needed
+curl -s http://app.63.176.86.97.nip.io/devices | python3 -m json.tool
+
+# the summariser: a grounded operator briefing citing device names and alert ids
+curl -s -H "X-API-Key: $KEY" http://app.63.176.86.97.nip.io/incidents/summary | python3 -m json.tool
 ```
 
-Returns 503 when no `ANTHROPIC_API_KEY` is configured; tests mock at the network seam,
-so CI runs green with no key and no network.
+The prompt uses ONLY the JSON context assembled by SQL and invents nothing (see
+`SYSTEM_PROMPT` in `app/services/summarize.py`); tests mock at the network seam, so CI
+runs green with no key and no network.
+
+## The Ops Agent
+
+`POST /agent/investigate` runs a tool-use loop: the model investigates through five
+typed tools (fleet stats, alerts, per-device telemetry, runbook search, ticket
+creation), cites only evidence it actually received, and proposes actions. Writes are
+approval-gated: without `approve_writes: true`, a ticket returns as `proposed`, never
+created. Every run persists to `agent_runs` with the full tool trace and token counts.
+
+```bash
+curl -s -X POST -H "X-API-Key: $KEY" -H 'Content-Type: application/json' \
+  -d '{"question": "investigate gw-001: check telemetry and alerts, be brief"}' \
+  http://app.63.176.86.97.nip.io/agent/investigate | python3 -m json.tool
+```
+
+**Evals:** `make eval` seeds eight known-root-cause scenarios and scores the agent's
+findings (right device named, right cause family, nothing invented). Currently 8/8.
+
+**MCP:** `mcp_server.py` exposes the same read tools over the Model Context Protocol;
+point Claude Desktop (or any MCP host) at it and ask about the fleet.
 
 ## Architecture
 
