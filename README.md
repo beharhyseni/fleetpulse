@@ -25,7 +25,7 @@ architecture.
 - [x] P5 — Grounded LLM incident summariser (`/incidents/summary`, cites alert ids, mocked-seam tests)
 - [x] P6 — Observability: request IDs, JSON logs, one error shape, Prometheus `/metrics`, API-key gate
 - [x] P7 — Ops Agent: tool-use loop, approval-gated writes, run tracing (`/agent/investigate`)
-- [ ] P8 — Agent evals + MCP server
+- [x] P8 — Agent evals (8 scenarios, `make eval`) + MCP server (`mcp_server.py`, Claude Desktop)
 
 ## Quickstart
 

@@ -13,3 +13,4 @@ dist/
 .terraform/
 *.tfstate*
 terraform.tfvars
+uv.lock

@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from app.models import Alert, Device, MaintenanceTicket, Telemetry
 from app.services.summarize import SILENT_AFTER_MIN
 
-RUNBOOK_DIR = Path("docs/runbooks")
+RUNBOOK_DIR = Path(__file__).resolve().parents[2] / "docs" / "runbooks"
 
 TOOLS: list[dict[str, Any]] = [
     {

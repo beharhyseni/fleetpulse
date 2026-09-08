@@ -4,3 +4,5 @@ httpx
 ruff
 mypy
 pre-commit
+mcp==2.2.0
+mcp-types==2.2.0

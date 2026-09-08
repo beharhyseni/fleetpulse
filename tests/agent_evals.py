@@ -270,7 +270,7 @@ def main() -> int:
             )
 
     passed = sum(1 for _, ok, _, _ in results if ok)
-    print(f"\n{passed}/{len(results)} passed  " f"tokens: {total_in} in / {total_out} out")
+    print(f"\n{passed}/{len(results)} passed  tokens: {total_in} in / {total_out} out")
     return 0 if passed == len(results) else 1
 
 
