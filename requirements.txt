@@ -5,3 +5,4 @@ sqlalchemy
 alembic
 psycopg[binary]
 anthropic==1.4.0
+prometheus_client==0.26.0
