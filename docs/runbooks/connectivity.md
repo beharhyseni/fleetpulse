@@ -1,0 +1,1 @@
+# Connectivity and signal issues\nHealthy RSSI is above -100. Between -100 and -110 is weak: monitor. Below -110, expect packet loss and gaps. Check antenna seating and carrier status page before dispatching.

@@ -1,0 +1,1 @@
+# Overheating gateways\nAlerts open above 70 C. Inspect enclosure ventilation, direct sun exposure, nearby heat sources. Sustained readings above 80 C risk hardware damage: power down remotely if possible and dispatch same day.

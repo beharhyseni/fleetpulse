@@ -10,6 +10,7 @@ RUN useradd -m -u 10001 appuser
 WORKDIR /app
 COPY --from=build /install /usr/local
 COPY app/ app/
+COPY docs/ docs/
 COPY alembic/ alembic/
 COPY alembic.ini .
 USER 10001

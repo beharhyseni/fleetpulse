@@ -16,7 +16,7 @@ from app.observability import (
     request_context_middleware,
     setup_logging,
 )
-from app.routers import alerts, devices, incidents, telemetry
+from app.routers import agent, alerts, devices, incidents, telemetry
 
 
 def create_app() -> FastAPI:
@@ -24,7 +24,7 @@ def create_app() -> FastAPI:
     setup_logging()
     application = FastAPI(
         title=settings.app_name,
-        version="0.4.0",
+        version="0.5.0",
         description=(
             "Real-time event monitoring with a grounded LLM copilot and a "
             "tool-using ops agent; demo domain: IoT device fleet."
@@ -36,6 +36,7 @@ def create_app() -> FastAPI:
     application.include_router(telemetry.router)
     application.include_router(alerts.router)
     application.include_router(incidents.router)
+    application.include_router(agent.router)
 
     @application.exception_handler(StarletteHTTPException)
     async def http_error(request: Request, exc: StarletteHTTPException) -> JSONResponse:

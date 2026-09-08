@@ -1,16 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException
 
 from app.config import get_settings
 from app.db import DbSession
 from app.schemas import SummaryOut
+from app.security import require_api_key
 from app.services.summarize import summarize_incidents
-
-
-def require_api_key(request: Request) -> None:
-    expected = get_settings().fleetpulse_api_key
-    if expected and request.headers.get("X-API-Key") != expected:
-        raise HTTPException(status_code=401, detail="invalid or missing API key")
-
 
 router = APIRouter(prefix="/incidents", tags=["incidents"], dependencies=[Depends(require_api_key)])
 

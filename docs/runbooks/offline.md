@@ -1,0 +1,1 @@
+# Device offline or silent\nA device with no readings for 2 hours is silent. Check site power first, then cellular coverage and SIM status. If RSSI degraded before the gap, suspect antenna or carrier. Escalate to field team if unreachable for 6 hours.

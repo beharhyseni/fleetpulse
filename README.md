@@ -24,7 +24,7 @@ architecture.
 - [x] P4 — CI/CD: build, push, deploy on merge
 - [x] P5 — Grounded LLM incident summariser (`/incidents/summary`, cites alert ids, mocked-seam tests)
 - [x] P6 — Observability: request IDs, JSON logs, one error shape, Prometheus `/metrics`, API-key gate
-- [ ] P7 — Ops Agent: tool-use loop, approval-gated writes, run tracing
+- [x] P7 — Ops Agent: tool-use loop, approval-gated writes, run tracing (`/agent/investigate`)
 - [ ] P8 — Agent evals + MCP server
 
 ## Quickstart

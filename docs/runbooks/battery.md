@@ -1,0 +1,1 @@
+# Battery drain and low battery\nWhen battery_pct falls below 15 an alert opens. Check charging supply and solar input at the site. Below 5 percent, dispatch within 24h: replace or recharge the pack. After replacement, confirm readings recover above 50.

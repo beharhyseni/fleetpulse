@@ -4,6 +4,7 @@ from typing import Any
 
 from sqlalchemy import (
     BigInteger,
+    Boolean,
     DateTime,
     Float,
     ForeignKey,
@@ -11,6 +12,7 @@ from sqlalchemy import (
     Index,
     Integer,
     String,
+    Text,
     func,
     text,
 )
@@ -68,3 +70,30 @@ class Alert(Base):
             postgresql_where=text("resolved_at IS NULL"),
         ),
     )
+
+
+class AgentRun(Base):
+    __tablename__ = "agent_runs"
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    question: Mapped[str] = mapped_column(String(500))
+    approve_writes: Mapped[bool] = mapped_column(Boolean, default=False)
+    status: Mapped[str] = mapped_column(String(20))  # completed | capped
+    findings: Mapped[str] = mapped_column(Text)
+    trace: Mapped[list[dict[str, Any]]] = mapped_column(JSONB)
+    iterations: Mapped[int] = mapped_column()
+    input_tokens: Mapped[int] = mapped_column()
+    output_tokens: Mapped[int] = mapped_column()
+    model: Mapped[str] = mapped_column(String(60))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class MaintenanceTicket(Base):
+    __tablename__ = "maintenance_tickets"
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    device_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("devices.id", ondelete="CASCADE"))
+    severity: Mapped[str] = mapped_column(String(20))
+    summary: Mapped[str] = mapped_column(String(500))
+    created_by_run: Mapped[int | None] = mapped_column(BigInteger)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

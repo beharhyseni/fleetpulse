@@ -97,3 +97,17 @@ class SummaryOut(BaseModel):
     alerts_open: int
     devices_affected: int
     silent_devices: int
+
+
+class InvestigateIn(BaseModel):
+    question: str = Field(min_length=5, max_length=500)
+    approve_writes: bool = False
+
+
+class AgentRunOut(BaseModel):
+    run_id: int
+    status: str
+    findings: str
+    actions: list[dict[str, Any]]
+    trace: list[dict[str, Any]]
+    usage: dict[str, int]
