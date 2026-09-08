@@ -38,3 +38,6 @@ build:
 
 deploy:
 	@echo "deploys ship via git push -- see .github/workflows/ci.yml"
+
+eval:
+	python -m tests.agent_evals
