@@ -23,7 +23,7 @@ architecture.
 - [x] P3 — Terraform + cloud k3s (live URL)
 - [x] P4 — CI/CD: build, push, deploy on merge
 - [x] P5 — Grounded LLM incident summariser (`/incidents/summary`, cites alert ids, mocked-seam tests)
-- [ ] P6 — Observability polish (structured logs, metrics, rate limits)
+- [x] P6 — Observability: request IDs, JSON logs, one error shape, Prometheus `/metrics`, API-key gate
 - [ ] P7 — Ops Agent: tool-use loop, approval-gated writes, run tracing
 - [ ] P8 — Agent evals + MCP server
 
@@ -55,14 +55,59 @@ so CI runs green with no key and no network.
 
 ## Architecture
 
+```mermaid
+flowchart LR
+    S[Sources] -->|POST /telemetry| V[pydantic validation]
+    V --> I[atomic ingest]
+    I --> DB[(Postgres)]
+    I --> R[rules engine]
+    R -->|ON CONFLICT dedupe| A[alerts]
+    DB --> READ[GET devices / telemetry / alerts]
+    A --> SUM[GET /incidents/summary]
+    DB --> SUM
+    SUM -->|grounded context| LLM[claude-sonnet-4-6]
+    subgraph Ops [k3s on EC2, Terraform-built, CI/CD on merge]
+        V
+        I
+        R
+        DB
+    end
+```
+
 Telemetry batches enter through `POST /telemetry`, are validated at the edge (pydantic),
 ingested atomically (SQLAlchemy/Postgres), and evaluated by a rules engine that raises
 deduplicated alerts, race-proofed by a partial unique index. Kubernetes runs it all
 (probes, secrets, ingress); Terraform builds the node it runs on. On top of the alert
 window, `GET /incidents/summary` assembles a token-frugal context (open alerts, per-device
 aggregates, silent devices) and has claude-sonnet-4-6 write a grounded briefing: the
-substrate the P7 agent will investigate with. Diagram lands at P6.
+substrate the P7 agent will investigate with.
+
+Every request carries an `X-Request-ID` (accepted or minted), is logged as one JSON line,
+and is counted in Prometheus metrics at `/metrics`, labeled by route template rather than
+raw path to keep label cardinality bounded. Errors share one envelope:
+`{"error": {"code", "message", "request_id"}}`.
 
 ## Design decisions
 
-Documented as they are made; summarised here at P6.
+- **Alert dedupe via partial unique index + `ON CONFLICT DO NOTHING`**, not savepoints:
+  one declarative round trip; two concurrent batches cannot double-alert.
+- **Flush before rules, commit once**: the rules engine sees the batch inside the same
+  transaction; the world sees all of it or none of it.
+- **PostgreSQL idioms accepted on purpose** (`ON CONFLICT`, `DISTINCT ON`): JSONB already
+  married the project to PG, so it uses PG well; portable alternative documented (window
+  functions).
+- **The pipeline owns the image field**: deploys are SHA-pinned by CI; humans do not run
+  `kubectl set image`. Manual applies would un-pin to `:latest` and fight the pipeline.
+- **Grounding means controlled retrieval**: SQL assembles the context, the model narrates
+  it and cites alert ids; the prompt forbids inventing data, and the silent-device list
+  lets the summary catch what the rules miss.
+- **Keyless is a working mode**: without `ANTHROPIC_API_KEY` the endpoint degrades to 503;
+  tests mock at the network seam, so CI never touches the internet. Cost-bearing endpoints
+  sit behind an optional `X-API-Key` gate for the day the URL is public.
+
+## Observability at a glance
+
+```bash
+curl -si http://app.63.176.86.97.nip.io/healthz | grep -i x-request-id
+curl -s  http://app.63.176.86.97.nip.io/metrics | head -5
+```

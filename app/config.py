@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://fleetpulse:fleetpulse@localhost:5432/fleetpulse"
     # Phase 5: LLM summariser / Phase 7: Ops Agent.
     anthropic_api_key: str = ""
+    fleetpulse_api_key: str = ""
 
 
 @lru_cache

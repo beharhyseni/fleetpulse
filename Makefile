@@ -4,7 +4,7 @@ install:
 	pip install -r requirements.txt -r requirements-dev.txt
 
 run:
-	uvicorn app.main:app --reload
+	uvicorn app.main:app --reload --no-access-log
 
 lint:
 	ruff check .

@@ -72,7 +72,7 @@ def test_unknown_devices_404_names_ids(client: TestClient) -> None:
     ghost = "00000000-0000-0000-0000-000000000001"
     response = client.post("/telemetry", json=[_reading(ghost, "2026-08-08T18:00:00Z")])
     assert response.status_code == 404
-    assert ghost in response.json()["detail"]
+    assert ghost in response.json()["error"]["message"]
 
 
 def test_empty_batch_is_422(client: TestClient) -> None:
