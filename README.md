@@ -1,6 +1,7 @@
 # FleetPulse
 **Live demo:** http://app.63.176.86.97.nip.io/docs
 > Real-time event monitoring with a grounded LLM copilot and a tool-using ops agent; demo domain: IoT device fleet.
+
 [![ci](https://github.com/beharhyseni/fleetpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/beharhyseni/fleetpulse/actions/workflows/ci.yml)
 
 FleetPulse is a small production-style event-monitoring platform, demonstrated on an IoT
